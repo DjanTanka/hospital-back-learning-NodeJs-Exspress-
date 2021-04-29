@@ -7,7 +7,7 @@ module.exports.getAllUsers = (req, res) => {
   });
 };
 
-module.exports.addNewUser = async (req, res) =>  {
+module.exports.addNewUser = async (req, res) => {
   const {login, password} = req.body;
   const candidateLogin = await User.findOne({login: login});
   if (candidateLogin) {
