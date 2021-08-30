@@ -1,27 +1,43 @@
 const express = require('express');
 const router = express.Router();
-//for Users of Appoint
+const authMiddleware = require('../../middleware/authMiddleware');
+const roleMiddleware = require('../../middleware/roleMiddleware');
+const { body } = require('express-validator') //для валидации тела запроса
+
+//for Users of hospital
 const {
   getAllUsers,
-  addNewUser,
-  userEnter,
+  registration,
+  login,
+  logout,
+  activate,
+  refresh,
 } = require('../controllers/user.controllers');
 
-router.get('/getAllUsers', getAllUsers);
-router.post('/addNewUser', addNewUser);
-router.post('/userEnter', userEnter);
+router.post(
+  '/registration',
+  body('email').isEmail(),
+  body('password').isLength({min: 6, max: 10}),
+  registration
+);
+router.post('/login', login);
+router.post('/logout', logout);
+router.get('/activate/:link', activate);
+router.get('/refresh', refresh);
+router.get('/getAllUsers', authMiddleware, getAllUsers);
 
-//for Users of Appoint
+
+//for Appoint
 const {
   getAllAppoints,
   addNewAppoint,
-  // editAppoint,
-  // deleteAppoint
+  editAppoint,
+  deleteAppoint
 } = require('../controllers/appoint.controllers');
 
 router.get('/getAllAppoints', getAllAppoints);
 router.post('/addNewAppoint', addNewAppoint);
-// router.put('/editAppoint', editAppoint);
-// router.delete('/deleteAppoint', deleteAppoint);
+router.put('/editAppoint', editAppoint);
+router.delete('/deleteAppoint', deleteAppoint);
 
 module.exports = router;
